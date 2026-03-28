@@ -1,0 +1,242 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+format = """
+$username${custom.localip}$hostname$aws$terraform$docker_context$kubernetes
+[╭─](fg:surface2)\
+[](surface0)\
+$directory\
+${custom.git_sep}\
+${custom.worktree}\
+$git_branch\
+$git_status\
+$c\
+$rust\
+$golang\
+$nodejs\
+$php\
+$java\
+$kotlin\
+$haskell\
+$python\
+$conda\
+$jobs\
+[│](fg:surface2 bg:surface0)\
+$time\
+[ ](fg:surface0)\
+$cmd_duration\
+$line_break\
+$character"""
+
+palette = 'catppuccin_mocha'
+
+[username]
+show_always = true
+style_user = "bold fg:lavender"
+style_root = "bold fg:red"
+format = '[   $user]($style)'
+
+[directory]
+style = "bold fg:blue bg:surface0"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+before_repo_root_style = "fg:overlay1 bg:surface0"
+repo_root_style = "bold fg:blue bg:surface0"
+repo_root_format = "[ $before_root_path]($before_repo_root_style)[$repo_root]($repo_root_style)[$path ]($style)"
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = "󰝚 "
+"Pictures" = " "
+"Developer" = "󰲋 "
+
+[git_branch]
+symbol = ""
+style = "bg:surface0"
+format = '([[$symbol $branch ](bold fg:mauve bg:surface0)]($style))'
+
+[git_status]
+style = "bg:surface0"
+format = '([│](fg:surface2 bg:surface0)[ $all_status$ahead_behind]($style))'
+conflicted = "[=${count} ](bold fg:red bg:surface0)"
+ahead = "[⇡${count} ](bold fg:green bg:surface0)"
+behind = "[⇣${count} ](bold fg:red bg:surface0)"
+diverged = "[⇕⇡${ahead_count} ⇣${behind_count} ](bold fg:flamingo bg:surface0)"
+up_to_date = "[✓ ](bold fg:green bg:surface0)"
+untracked = "[?${count} ](bold fg:sky bg:surface0)"
+stashed = "[*${count} ](bold fg:teal bg:surface0)"
+modified = "[!${count} ](bold fg:peach bg:surface0)"
+staged = "[+${count} ](bold fg:green bg:surface0)"
+renamed = "[»${count} ](bold fg:blue bg:surface0)"
+deleted = "[✘${count} ](bold fg:red bg:surface0)"
+
+[nodejs]
+symbol = ""
+style = "bg:surface0"
+format = '[│](fg:surface2 bg:surface0)[[ $symbol( $version) ](fg:teal bg:surface0)]($style)'
+
+[c]
+symbol = " "
+style = "bg:surface0"
+format = '[│](fg:surface2 bg:surface0)[[ $symbol( $version) ](fg:teal bg:surface0)]($style)'
+
+[rust]
+symbol = ""
+style = "bg:surface0"
+format = '[│](fg:surface2 bg:surface0)[[ $symbol( $version) ](fg:teal bg:surface0)]($style)'
+
+[golang]
+symbol = ""
+style = "bg:surface0"
+format = '[│](fg:surface2 bg:surface0)[[ $symbol( $version) ](fg:teal bg:surface0)]($style)'
+
+[php]
+symbol = ""
+style = "bg:surface0"
+format = '[│](fg:surface2 bg:surface0)[[ $symbol( $version) ](fg:teal bg:surface0)]($style)'
+
+[java]
+symbol = " "
+style = "bg:surface0"
+format = '[│](fg:surface2 bg:surface0)[[ $symbol( $version) ](fg:teal bg:surface0)]($style)'
+
+[kotlin]
+symbol = ""
+style = "bg:surface0"
+format = '[│](fg:surface2 bg:surface0)[[ $symbol( $version) ](fg:teal bg:surface0)]($style)'
+
+[haskell]
+symbol = ""
+style = "bg:surface0"
+format = '[│](fg:surface2 bg:surface0)[[ $symbol( $version) ](fg:teal bg:surface0)]($style)'
+
+[python]
+symbol = ""
+style = "bg:surface0"
+format = '[│](fg:surface2 bg:surface0)[[ $symbol( $version)(\(#$virtualenv\)) ](fg:teal bg:surface0)]($style)'
+
+[docker_context]
+symbol = ""
+style = "fg:sapphire"
+format = '[$symbol $context]($style) '
+
+[kubernetes]
+disabled = false
+symbol = "󱃾"
+style = "fg:teal"
+format = '[$symbol $context( \($namespace\))]($style) '
+
+[[kubernetes.contexts]]
+context_pattern = ".*production.*"
+context_alias = "prod"
+style = "bold fg:crust bg:red"
+symbol = "󱃾"
+
+[[kubernetes.contexts]]
+context_pattern = ".*staging.*"
+context_alias = "stg"
+style = "fg:crust bg:yellow"
+symbol = "󱃾"
+
+[custom.git_sep]
+command = "echo ' '"
+when = "git rev-parse --is-inside-work-tree 2>/dev/null"
+style = "bg:surface0"
+format = '[│ ](fg:surface2 bg:surface0)'
+
+[custom.worktree]
+command = "wt=$(ls \"$(git rev-parse --git-common-dir)/worktrees\" 2>/dev/null | wc -l); [ \"$wt\" -gt 0 ] && echo \"$((wt + 1))\""
+when = "ls \"$(git rev-parse --git-common-dir 2>/dev/null)/worktrees\" 2>/dev/null | grep -q ."
+style = "bg:surface0"
+format = '[[$output ](bold fg:flamingo bg:surface0)]($style)'
+
+[custom.localip]
+command = "main=$(ip -o -4 route get 1 | awk '{print $5\"(\"$7\")\"}'); vpn=$(ip -o -4 addr show | awk '/tun[0-9]|tap[0-9]|wg[0-9]/{split($4,a,\"/\"); print $2\"(\"a[1]\")\"}' | head -1); if [ -n \"$vpn\" ]; then echo \"$main 󰖂 $vpn\"; else echo \"$main\"; fi"
+when = true
+symbol = " "
+style = "fg:lavender"
+format = '[$symbol$output]($style) '
+
+[conda]
+symbol = "  "
+style = "fg:peach bg:surface0"
+format = '[│](fg:surface2 bg:surface0)[ $symbol$environment ]($style)'
+ignore_base = false
+
+[time]
+disabled = false
+time_format = "%R"
+style = "bg:surface0"
+format = '[[  $time ](fg:subtext1 bg:surface0)]($style)'
+
+[aws]
+symbol = "󰸏 "
+style = "fg:peach"
+format = '[$symbol$profile( \($region\))]($style) '
+[aws.profile_aliases]
+"default" = ""
+
+[terraform]
+symbol = "󱁢"
+style = "fg:mauve"
+format = '[$symbol $workspace]($style) '
+
+[hostname]
+ssh_only = true
+style = "bold fg:red"
+format = '[ 󰣀 $hostname]($style) '
+
+[jobs]
+symbol = "󰜎"
+style = "bold fg:yellow bg:surface0"
+format = '[│](fg:surface2 bg:surface0)[ $symbol $number ]($style)'
+number_threshold = 1
+
+[line_break]
+disabled = false
+
+[character]
+disabled = false
+success_symbol = '[╰─](fg:surface2) [❯](bold fg:green)'
+error_symbol = '[╰─](fg:surface2) [❯](bold fg:red)'
+vimcmd_symbol = '[╰─](fg:green) [❮](bold fg:green)'
+vimcmd_replace_one_symbol = '[╰─](fg:lavender) [❮](bold fg:lavender)'
+vimcmd_replace_symbol = '[╰─](fg:lavender) [❮](bold fg:lavender)'
+vimcmd_visual_symbol = '[╰─](fg:yellow) [❮](bold fg:yellow)'
+
+[cmd_duration]
+show_milliseconds = true
+format = "  $duration "
+style = "fg:peach"
+disabled = false
+show_notifications = true
+min_time_to_notify = 45000
+
+[palettes.catppuccin_mocha]
+rosewater = "#f5e0dc"
+flamingo = "#f2cdcd"
+pink = "#f5c2e7"
+mauve = "#cba6f7"
+red = "#f38ba8"
+maroon = "#eba0ac"
+peach = "#fab387"
+yellow = "#f9e2af"
+green = "#a6e3a1"
+teal = "#94e2d5"
+sky = "#89dceb"
+sapphire = "#74c7ec"
+blue = "#89b4fa"
+lavender = "#b4befe"
+text = "#cdd6f4"
+subtext1 = "#bac2de"
+subtext0 = "#a6adc8"
+overlay2 = "#9399b2"
+overlay1 = "#7f849c"
+overlay0 = "#6c7086"
+surface2 = "#585b70"
+surface1 = "#45475a"
+surface0 = "#313244"
+base = "#1e1e2e"
+mantle = "#181825"
+crust = "#11111b"
