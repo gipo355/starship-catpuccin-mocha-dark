@@ -1,5 +1,8 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
+# raise directory-scan timeout (default 30ms) to avoid "Scanning timed out" warnings
+scan_timeout = 50
+
 format = """
 $username${custom.localip}$hostname$aws$terraform$docker_context$kubernetes
 [╭─](fg:surface2)\
@@ -9,6 +12,7 @@ ${custom.git_sep}\
 ${custom.worktree}\
 $git_branch\
 $git_status\
+$git_state\
 $c\
 $rust\
 $golang\
@@ -70,6 +74,17 @@ modified = "[!${count} ](bold fg:peach bg:surface0)"
 staged = "[+${count} ](bold fg:green bg:surface0)"
 renamed = "[»${count} ](bold fg:blue bg:surface0)"
 deleted = "[✘${count} ](bold fg:red bg:surface0)"
+
+[git_state]
+style = "bold fg:flamingo bg:surface0"
+format = '[│](fg:surface2 bg:surface0)[ $state( $progress_current/$progress_total) ]($style)'
+rebase = "REBASING"
+merge = "MERGING"
+revert = "REVERTING"
+cherry_pick = "CHERRY-PICKING"
+bisect = "BISECTING"
+am = "AM"
+am_or_rebase = "AM/REBASE"
 
 [nodejs]
 symbol = ""
